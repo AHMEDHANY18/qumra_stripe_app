@@ -2,7 +2,7 @@
   "scopes": [
     "orders:read",
     "orders:write",
-    "payment_apps:write"
+    "store:read"
   ],
   "webhooks": {
     "api_version": "v1",

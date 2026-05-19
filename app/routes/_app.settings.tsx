@@ -3,6 +3,7 @@ import { Form, useActionData, useLoaderData, useNavigation } from "react-router"
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import Stripe from "stripe";
 import { authenticate } from "~/qumra.server";
+import { authenticateAction } from "~/lib/admin-auth.server";
 import { getStoreSettings, ensureIndexes } from "~/db.server";
 import { ensureWebhookEndpoint } from "~/lib/stripe.server";
 
@@ -24,8 +25,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const auth = await authenticate.admin(request);
-  if (auth instanceof Response) return auth;
+  // Don't use authenticate.admin here — its POST handler expects JSON+HMAC,
+  // not form-urlencoded. Manually validate via Prisma session instead.
+  const auth = await authenticateAction(request);
 
   const form = await request.formData();
   const secretKey = String(form.get("secretKey") ?? "").trim();

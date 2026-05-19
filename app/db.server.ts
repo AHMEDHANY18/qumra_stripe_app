@@ -9,7 +9,11 @@ import { MongoClient, type Collection, type Db } from "mongodb";
  * app startup. Operations that need Mongo will fail individually.
  */
 
-const url = process.env.MONGODB_URL ?? "mongodb://localhost:27017";
+// Accept either MONGODB_URL or MONGODB_URI (core-service uses the latter)
+const url =
+  process.env.MONGODB_URL ??
+  process.env.MONGODB_URI ??
+  "mongodb://localhost:27017";
 const dbName = process.env.MONGODB_DB ?? "qumra_stripe_app";
 
 declare global {
